@@ -4,7 +4,7 @@ const unorderedList = document.querySelector(".guessed-letters");
 const button =  document.querySelector(".guess");
 //The button with the text “Guess!” in it.
 
-const input = document.querySelector(".letter")
+const letterInput = document.querySelector(".letter")
 //The text input where the player will guess a letter.
 
 const wordInProgress = document.querySelector(".word-in-progress");
@@ -32,7 +32,7 @@ const guessedLetters = [];//the letters that have already been guessed
 const placeholder = function (word) {
     const placeholderLetters = []; //create an empty array
     for (const letter of word) { //looping through each letter of magnolia
-        //console.log(letter); //indivdiually log out the letters of magnolia
+        console.log(letter); //indivdiually log out the letters of magnolia
         placeholderLetters.push("●"); //bc we are looping through it is going to have this symbol for each letter of magnolia
     }
     wordInProgress.innerText = placeholderLetters.join(""); //this is joining all the dots together in a string
@@ -47,7 +47,7 @@ button.addEventListener("click", function(e){
 
     message.innerText = ""; //emptied text      
 
-    const guessedLetter = input.value;  //captures value of input
+    const guessedLetter = letterInput.value;  //captures value of input
 
     const goodGuess = validInput(guessedLetter);
 
@@ -57,12 +57,12 @@ button.addEventListener("click", function(e){
 
     //console.log(guessedLetter);
 
-    input.value = "";//you emptied the value of the input
+    letterInput.value = "";//you emptied the value of the input
     
     //validInput(input.value);
 });
 
-const validInput = function (input) {
+const validInput = function (input) {//This function’s purpose is to validate the player’s input.
     const acceptedLetter = /[a-zA-Z]/ //Now your code uses a regular expression to ensure the player inputs a letter!
     if (input.length === 0) { //is the input empty?
         message.innerText = "Please enter a letter";
@@ -77,11 +77,56 @@ const validInput = function (input) {
 
 
 const makeGuess = function (guessedLetter) {
-    guessedLetter = guessedLetter.toUpperCase();
+    guessedLetter = guessedLetter.toUpperCase(); //JS is case sensitive
     if (guessedLetters.includes(guessedLetter)) {
         message.innerText = "You're funny! You already guessed that letter, try again!";
     } else {
         guessedLetters.push(guessedLetter);
         console.log(guessedLetters);
+        showLetter();
+        updateWordInProgress(guessedLetters);
     }
 };
+
+
+//function to show the guessed letters
+const showLetter = function () {
+    //clear list
+    unorderedList.innerHTML = "";
+    for (const letter of guessedLetters) {
+        const li = document.createElement("li");
+        li.innerText= letter;
+        unorderedList.append(li);
+    }
+};
+
+
+
+// This function will replace the circle symbols with the correct letters guessed.
+const updateWordInProgress = function (guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    // a variable to split the word string into an array so that the letter can appear in the guessedLetters array:
+    const revealWord = [];
+    //console.log(wordArray); //this logs out the word magnolia in the console
+    for (const letter of wordArray) {
+        if (guessedLetters.includes(letter)){
+            revealWord.push(letter.toUpperCase());
+        } else {
+            revealWord.push("●");
+        }
+    }
+    //console.log(revealWord);
+    wordInProgress.innerText = revealWord.join("");
+    playerSuccess();
+};
+
+//updateWordInProgress();
+
+const playerSuccess = function () {
+    if (word.toUpperCase() === wordInProgress.innerText) {
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
+    }
+};
+
