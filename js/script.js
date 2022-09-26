@@ -26,7 +26,7 @@ const hiddenButton = document.querySelector(".play-again");
 let word = "magnolia";
 //Magnolia is your starting word to test out the game until you fetch words from a hosted file
 
-const guessedLetters = [];//the letters that have already been guessed 
+let guessedLetters = [];//the letters that have already been guessed 
 
 let remainingGuesses = 8;
 
@@ -89,7 +89,7 @@ const validInput = function (input) {//This function’s purpose is to validate 
     } else if (input.length > 1) { //did they put more than 1 letter?
         message.innerText = "Did you mean to enter in more than one letter?";
     } else if (!input.match(acceptedLetter)) { // did you type something other than a letter?
-        message.innerText = "Please enter a letter from A to Z.";
+        message.innerText = "Woah, is that a letter? Please enter a letter from A to Z.";
     } else { //finally it is a single letter they inputed
         return input;
     }
@@ -147,18 +147,19 @@ const updateWordInProgress = function (guessedLetters) {
 const countGuessesRemaining = function(guessedLetter) {
     const upperWord = word.toUpperCase();
     if(!upperWord.includes(guessedLetter)) {
-        message.innerText = `Nope try again sucker! There is no ${guessedLetter}`;
+        message.innerText = `Nope try again! There is no ${guessedLetter}`;
         remainingGuesses -=1;  
     } else {
         message.innerText = `Good job! You're one step closer. The word has the letter ${guessedLetter}`;
     }
 
     if (remainingGuesses === 0){
-        message.innerHTML = `<p class="highlight> You have no guesses remaining loser! The word is ${word}.</p>`;
+        message.innerHTML = `*Cue sad music* You have no guesses remaining. The word is <span class="highlight">${word}.</span>`;
+        startOver();
     } else if (remainingGuesses === 1){
-        remaining.innerHTML = `<p class="remaining"> You have ${remainingGuesses} guess remaining. May the odds be ever in your favor</p>`;
+        remaining.innerText = `${remainingGuesses} guess remaining. May the odds be ever in your favor.`;
     } else {
-        remaining.innerHTML = `You got ${remainingGuesses} guesses remaining shawty.`;
+        remaining.innerText = `${remainingGuesses} guesses remaining, my friend.`;
     }
 };
 
@@ -166,9 +167,36 @@ const countGuessesRemaining = function(guessedLetter) {
 const playerSuccess = function () {
     if (word.toUpperCase() === wordInProgress.innerText) {
         message.classList.add("win");
-        message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
+        message.innerHTML = `<p class="highlight">You guessed the correct word! Bragging rights belong to you!</p>`;
+
+        startOver();
     }
 };
 
+const startOver = function () {
+    button.classList.add("hide");
+    remaining.classList.add("hide");
+    unorderedList.classList.add("hide");
+    hiddenButton.classList.remove("hide");
+};
 
+hiddenButton.addEventListener("click", function(){
+    message.classList.remove("win");
+    guessedLetters = [];
+    remainingGuesses = 8;
+    remainingSpan.innerText = `${remainingGuesses} guesses`;
+    unorderedList.innerHTML = "";
+    message.innerText = "";
+    
+
+    //grab a new word
+    getWord();
+    
+    //show the right UI elements
+    button.classList.remove("hide");
+    remaining.classList.remove("hide");
+    unorderedList.classList.remove("hide");
+    hiddenButton.classList.add("hide");
+
+});
 
