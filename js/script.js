@@ -184,7 +184,7 @@ hiddenButton.addEventListener("click", function(){
     message.classList.remove("win");
     guessedLetters = [];
     remainingGuesses = 8;
-    remainingSpan.innerText = `${remainingGuesses} guesses`;
+    remaining.innerText = `${remainingGuesses} guesses`;
     unorderedList.innerHTML = "";
     message.innerText = "";
     
